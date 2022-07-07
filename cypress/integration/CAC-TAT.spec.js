@@ -17,6 +17,11 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
   it('preenche os campos obrigatórios e envia o formulário', function(){
+    
+    //Estou congelando o relogio do navegador
+    cy.clock()
+    
+    
     // Estou dizendo, busque o elemento input com os atributos tipo = text e id=firstName, podem ser colocados mais especificações
     cy.get('input[type="text"][id="firstName"]')
       .should('be.visible')
@@ -48,6 +53,11 @@ describe('Central de Atendimento ao Cliente TAT', function () {
 
     cy.get('span[class="success"]')
     .should('be.visible')
+
+    //Estou avançando no tempo, 3000 milisegundos, 3 segundos
+    cy.tick(3000)
+    cy.get('span[class="success"]')
+    .should('not.be.visible')
   })
 
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function(){
@@ -164,7 +174,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     
 
   })
-
+  Cypress._. times(5, function(){
   it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios.', function(){
     cy.get('button[type="submit"]')
     .contains('Enviar')
@@ -175,11 +185,21 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     .should('be.visible')
   
   })
-
+  })
   it('envia o formuário com sucesso usando um comando customizado', function(){
     cy.fillMandatoryFieldsAndSubmit()
+    //Estou congelando o relogio do navegador
+    cy.clock()
     cy.get('span[class="success"]')
     .should('be.visible')
+
+    //Estou avançando no tempo, 3000 milisegundos, 3 segundos
+    cy.tick(3000)
+    cy.get('span[class="success"]')
+    .should('not.be.visible')
+    
+
+
 
   })
 
