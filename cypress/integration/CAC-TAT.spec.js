@@ -174,17 +174,18 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     
 
   })
+  //Estou utilizando a biblioteca do mundo do Javascript Lodash, através do "Cypres._.", por padrao o cypress ja empacota ela junto
   Cypress._. times(5, function(){
-  it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios.', function(){
-    cy.get('button[type="submit"]')
-    .contains('Enviar')
-    .click()
+    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios.', function(){
+      cy.get('button[type="submit"]')
+      .contains('Enviar')
+      .click()
 
 
-    cy.get('span[class="error"]')
-    .should('be.visible')
-  
-  })
+      cy.get('span[class="error"]')
+      .should('be.visible')
+    
+    })
   })
   it('envia o formuário com sucesso usando um comando customizado', function(){
     cy.fillMandatoryFieldsAndSubmit()
@@ -317,7 +318,59 @@ describe('Central de Atendimento ao Cliente TAT', function () {
       .should('contain', 'CAC TAT - Política de privacidade')
 
   })
+  it('exibe e esconde as mensagens de sucesso e erro usando o .invoke()', function(){
+    //Pega o elemento com a  classe success
+    cy.get('.success')
+      .should('not.be.visible')
+      //Invoke forçando a exibição de um elemento com o display:none, 
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      //Invoke forçando que o elemento fique escondido, 
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+  })
 
+  it.only('preenche a area de texto usando o comando invoke', function(){
+    //Estou criando uma variável
+    //const longtext = 'Test test Test test Test test Test test Test test Test test '
+
+    //Forma mais inteligente de criar um texto que se repete, escreva 'Test ' 20 vezes
+    const longtext= Cypress._.repeat('Test ', 20)
+
+    cy.get('textarea[id="open-text-area"]')
+      .should('be.visible')
+      //Invoca o valor do elemento pego pelo cy.get, e setta nesse valor o texto informando antes
+      .invoke('val', longtext)
+      .should('have.value', longtext)
+  })
+  it.only('faz uma requisição HTTP', function(){
+    cy.request('GET', 'https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+      //Função está utilizando da resposta da requisição
+      .should(function(response){
+        //Criei 3 variaveis, desestruturando um objeto em Javascript 
+        const {status, statusText, body} = response
+        expect(status).to.equal(200)
+        expect(statusText).to.equal('OK')
+        expect(body).to.include('CAC TAT')
+      })
+  })
+  it.only('ache o gato', function(){
+    cy.get('span[id="cat"]')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+    //Outra funcao do invoke, selecionar o texto do elemento e altera-lo
+    cy.get('#title')
+      .invoke('text', 'Eu amo Cachorros')
+  })
 
 })
 
